@@ -3,8 +3,7 @@ package net.jp.ytake.zundoko
 import java.util.Properties
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
-import org.apache.kafka.common.serialization.StringSerializer
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 
 object MessageProducer extends App {
 
@@ -19,9 +18,9 @@ object MessageProducer extends App {
   val bootstrapServers: String = prop.getProperty("bootstrap_servers")
   val topic: String = prop.getProperty("topic")
   prop.clear()
-  prop.put("bootstrap.servers", bootstrapServers)
-  prop.put("key.serializer", classOf[StringSerializer].toString)
-  prop.put("value.serializer", classOf[StringSerializer].toString)
+  prop.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
+  prop.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
+  prop.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
 
   val producer = new KafkaProducer[String, String](prop)
   val m = new MessageGenerator()
